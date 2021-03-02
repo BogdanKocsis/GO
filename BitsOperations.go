@@ -17,49 +17,39 @@ func swap(a *int, b *int) {
 	return
 }
 
-func bitFlow(data string) {
+func encodeDecode(data string) {
 
-	//output, err := strconv.ParseInt(string(data), 2, 64)
-	//if err != nil {
-	//	fmt.Println(err)
-	//	return
-	//}
 	var mask int64 = 63
 	stringMask := strconv.FormatInt(mask, 2)
-	fmt.Println("Mask: ", strconv.FormatInt(mask, 2))
-	//x := output ^ mask
-	//fmt.Println("Info with mask: ",strconv.FormatInt(x, 2))
-	var step int = 0
-	var x string = ""
-	for i := 0; i < len(data); i = i + len(stringMask) {
-		s := data[i : len(stringMask)+step]
-		output, _ := strconv.ParseInt(string(s), 2, 64)
-		aux := output ^ mask
-		x = x + strconv.FormatInt(aux, 2)
-		step += len(stringMask)
-		fmt.Printf("%s\n", s)
-		if len(stringMask)+step > len(data) {
-			break
-		}
+	aux := stringMask
 
+	divide := len(data) / len(stringMask)
+	remainder := len(data) % len(stringMask)
+
+	for i := 0; i < divide; i++ {
+		stringMask += aux
 	}
-	//if len(data) % len(stringMask) != 0 {
-	//	fmt.Println("ok")
-	//	var lastCharacters = data[len(data)-(len(data)%len(stringMask)):]
-	//
-	//	output, _ := strconv.ParseInt(string(lastCharacters), 2, 64)
-	//	stringMask = stringMask[0:(len(data)%len(stringMask))]
-	//	mask, _ := strconv.ParseInt(string(stringMask), 2, 64)
-	//	aux := output ^ mask
-	//	println(output)
-	//	x = x + strconv.FormatInt(aux, 2)
-	//}
+	if remainder != 0 {
+		stringMask += stringMask[0:remainder]
+	}
+	fmt.Println("Mask: ", stringMask)
 
-	fmt.Println("Mask: ", x, len(x), len(data))
+	information, err := strconv.ParseInt(data, 2, 64)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
-	//var t int64
-	//t = x ^ mask
-	//fmt.Println("Same Info:", strconv.FormatInt(t, 2))
+	code, err := strconv.ParseInt(stringMask, 2, 64)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	x := information ^ code
+	fmt.Println("Encoded information: ", strconv.FormatInt(x, 2))
+	y := x ^ code
+	fmt.Println("Decoded information: ", strconv.FormatInt(y, 2))
 
 }
 
@@ -72,7 +62,7 @@ func bitExtracted(number int, p int, t int) int {
 
 func convertToHex(number int64) {
 
-	var s string = ""
+	var s = ""
 	for number > 0 {
 		residue := number % (1 << 4)
 		s += strconv.FormatInt(residue, 16)
@@ -112,7 +102,7 @@ func main() {
 			return
 		}
 		fmt.Println("Contents of file:", string(data))
-		bitFlow(string(data))
+		encodeDecode(string(data))
 
 	case 4:
 
