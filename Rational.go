@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	fmt "fmt"
 	"math"
 	"strings"
 	//"math/big"
@@ -191,11 +191,25 @@ func (r Rational) isNatural() bool {
 // 0.4324 => 4324 / 1000 => simplificare
 func getFromFloat32(x float32) Rational {
 
-	zeros := len(strings.Split(fmt.Sprintf("%v", x), ".")[1])
-	numi := math.Pow(10, float64(zeros))
-	numa := x * float32(numi)
-	result := Rational{int(numa), int(numi)}
-	return result.simplify()
+	i := fmt.Sprint(x)
+	if strings.Contains(i, ".") {
+		zeros := len(strings.Split(fmt.Sprintf("%v", x), ".")[1])
+		numi := math.Pow(10, float64(zeros))
+		numa := x * float32(numi)
+		result := Rational{int(numa), int(numi)}
+		return result.simplify()
+
+	} else {
+		return Rational{int(x), 1}
+	}
+
+	//
+	//dec := 0
+	//for float64(x) != math.Trunc(float64(x)) {
+	//	dec++
+	//	x = x * 10
+	//}
+	//return Rational{int(x), int(math.Pow10(dec))}
 
 	//s := fmt.Sprintf("%f", x)
 	//r, _ := new(big.Rat).SetString(s)
@@ -263,7 +277,7 @@ func main() {
 	fmt.Println("Equals: ", number1.equals(number2))
 	fmt.Println("Is Natural: ", number1.isNatural())
 	fmt.Println("Inverse: ", number1.inverse())
-	fmt.Println("Get From Float:", getFromFloat32(0.887))
+	fmt.Println("Get From Float:", getFromFloat32(-2.25))
 	fmt.Println("Get Negative :", getNegative(number2))
 	fmt.Println("Get Square Root :", getSquareRoot(number2))
 }
