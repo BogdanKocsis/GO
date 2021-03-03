@@ -73,7 +73,7 @@ func convertToHex(number int64) {
 
 func main() {
 
-	fmt.Printf("Menu\n 1.Is Power of Two\n 2.Bit Swap\n 3. \n 4.Extracted Number\n 5.Convert to Hex \n")
+	fmt.Printf("Menu\n 1.Is Power of Two\n 2.Bit Swap\n 3.Encode/Decode \n 4.Extracted Number\n 5.Convert to Hex \n")
 	var i int
 	fmt.Printf("Write the option: ")
 	_, _ = fmt.Scanf("%d", &i)
