@@ -5,30 +5,30 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"time"
 )
 
 func main() {
 	var samples int
-	//var verbose bool
+
 	inside := 0
 	pi := 0.0
-
+	min := 0.0
+	max := 2.0 // consider raza 1
 	flag.IntVar(&samples, "samples", 1000000, "Number of samples")
-	//flag.BoolVar(&verbose, "v", false, "Verbose display")
 
 	flag.Parse()
-
+	rand.Seed(time.Now().UnixNano())
 	for i := 1; i <= samples; i++ {
-		var x = rand.Float64()
-		var y = rand.Float64()
-		d := math.Sqrt(math.Pow(x, 2) + math.Pow(y, 2))
+		x := (rand.Float64() * (max - min)) + min
+		y := (rand.Float64() * (max - min)) + min
+		d := math.Sqrt(math.Pow(x-1, 2) + math.Pow(y-1, 2))
 		if d <= 1 {
 			inside += 1
 		}
 		pi = float64(inside) / float64(i) * 4
-		//if verbose {
-		//	fmt.Printf("Occurrence number: %d, pi estimation : %f\n", i, pi)
-		//}
+
 	}
+
 	fmt.Println(pi)
 }
