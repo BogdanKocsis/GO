@@ -73,7 +73,7 @@ func ToDate(year, month, day int) time.Time { // convert input to time.Date form
 	return time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 }
 
-func isLeap(y int) bool {
+func IsLeap(y int) bool {
 
 	if y%100 != 0 && y%4 == 0 || y%400 == 0 {
 		return true
@@ -81,10 +81,8 @@ func isLeap(y int) bool {
 	return false
 }
 
-func countLeapYears(date time.Time) (leaps int) {
+func CountLeapYears(date time.Time) (leaps int) {
 
-	// returns year, month,
-	// date of a time object
 	y, m, _ := date.Date()
 
 	if m <= 2 {
@@ -94,43 +92,30 @@ func countLeapYears(date time.Time) (leaps int) {
 	return leaps
 }
 
-func getDifference(a, b time.Time) (days int) {
+func GetDifference(a, b time.Time) (days int) {
 
-	// month-wise days
 	monthDays := [12]int{31, 28, 31, 30, 31,
 		30, 31, 31, 30, 31, 30, 31}
 
-	// extracting years, months,
-	// days of two dates
 	y1, m1, d1 := a.Date()
 	y2, m2, d2 := b.Date()
 
-	// totalDays since the
-	// beginning = year*365 + number_of_days
 	totalDays1 := y1*365 + d1
 
-	// adding days of the months
-	// before the current month
 	for i := 0; i < (int)(m1)-1; i++ {
 		totalDays1 += monthDays[i]
 	}
 
-	// counting leap years since
-	// beginning to the year "a"
-	// and adding that many extra
-	// days to the totaldays
-	totalDays1 += countLeapYears(a)
+	totalDays1 += CountLeapYears(a)
 
-	// Similar procedure for second date
 	totalDays2 := y2*365 + d2
 
 	for i := 0; i < (int)(m2)-1; i++ {
 		totalDays2 += monthDays[i]
 	}
 
-	totalDays2 += countLeapYears(b)
+	totalDays2 += CountLeapYears(b)
 
-	// Number of days between two days
 	days = totalDays2 - totalDays1
 
 	return days
@@ -179,19 +164,19 @@ func offsetDays(a time.Time) int {
 	}
 	fmt.Println(offset)
 
-	if isLeap(y) && m > 2 {
+	if IsLeap(y) && m > 2 {
 		offset += 1
 	}
 	fmt.Println(offset)
 	return offset
 }
 
-func revoffsetDays(offset int, y int) (d int, m int) {
+func RevOffSetDays(offset int, y int) (d int, m int) {
 
 	month := [13]int{0, 31, 28, 31, 30, 31, 30,
 		31, 31, 30, 31, 30, 31}
 
-	if isLeap(y) {
+	if IsLeap(y) {
 		month[2] = 29
 	}
 	var i int
@@ -208,14 +193,14 @@ func revoffsetDays(offset int, y int) (d int, m int) {
 	return d, m
 }
 
-func addDays(a time.Time, days int) {
+func AddDays(a time.Time, days int) {
 
 	y, _, _ := a.Date()
 	offset1 := offsetDays(a)
 	fmt.Println(offset1)
 	remDays := 0
 
-	if isLeap(y) {
+	if IsLeap(y) {
 		remDays = 366 - offset1
 	} else {
 		remDays = 365 - offset1
@@ -231,7 +216,7 @@ func addDays(a time.Time, days int) {
 		days -= remDays
 		y1 = y + 1
 		var y1days int
-		if isLeap(y1) {
+		if IsLeap(y1) {
 			y1days = 366
 		} else {
 			y1days = 365
@@ -239,7 +224,7 @@ func addDays(a time.Time, days int) {
 		for days >= y1days {
 			days -= y1days
 			y1++
-			if isLeap(y1) {
+			if IsLeap(y1) {
 				y1days = 366
 			} else {
 				y1days = 365
@@ -247,45 +232,11 @@ func addDays(a time.Time, days int) {
 		}
 		offset2 = days
 	}
-	day, month := revoffsetDays(offset2, y1)
-	fmt.Println(day, month, y1)
+	day, month := RevOffSetDays(offset2, y1)
+	fmt.Println(day, "-", month, "-", y1)
 }
 
-func timeSubDays(t1, t2 time.Time) int {
-
-	if t1.Location().String() != t2.Location().String() {
-		return -1
-	}
-	hours := t1.Sub(t2).Hours()
-
-	if hours <= 0 {
-		return -1
-	}
-	// sub hours less than 24
-	if hours < 24 {
-		// may same day
-		t1y, t1m, t1d := t1.Date()
-		t2y, t2m, t2d := t2.Date()
-		isSameDay := t1y == t2y && t1m == t2m && t1d == t2d
-
-		if isSameDay {
-
-			return 0
-		} else {
-			return 1
-		}
-
-	} else { // equal or more than 24
-
-		if (hours/24)-float64(int(hours/24)) == 0 { // just 24's times
-			return int(hours / 24)
-		} else { // more than 24 hours
-			return int(hours/24) + 1
-		}
-	}
-}
-
-func timeSubYearsMonthsWeeksDays(days float64) {
+func TimeSubYearsMonthsWeeksDays(days float64) {
 
 	years := math.Floor(days / 365) // approximates down
 	months := math.Floor((days - years*365) / 30)
@@ -295,17 +246,6 @@ func timeSubYearsMonthsWeeksDays(days float64) {
 	fmt.Printf("The diffence between of these 2 days: %v years, %v months, %v weeks, %v days. \n", years, months, weeks, day)
 	fmt.Println()
 }
-
-//func AddDays(t2 time.Time) {
-//
-//	layout := layoutRo
-//	var numberOfDays int
-//	fmt.Print("Number of days:\t\t")
-//	readValue(&numberOfDays)
-//	date := t2.AddDate(0, 0, numberOfDays)
-//	fmt.Printf("%v \n", date.Format(layout))
-//	fmt.Println()
-//}
 
 func SubDays(t2 time.Time) {
 
@@ -353,16 +293,15 @@ func main() {
 		if t1.After(t2) {
 			t1, t2 = t2, t1
 		}
-		days := getDifference(t1, t2)
+		days := GetDifference(t1, t2)
 		fmt.Println(days)
 
 	case 2:
-		days := timeSubDays(t1, t2)
-		timeSubYearsMonthsWeeksDays(float64(days))
+		days := GetDifference(t1, t2)
+		TimeSubYearsMonthsWeeksDays(float64(days))
 
 	case 3:
-		//AddDays(t2)
-		addDays(t1, 366)
+		AddDays(t1, 366)
 	case 4:
 		SubDays(t2)
 	}
