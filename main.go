@@ -1,7 +1,7 @@
 package main
 
 import (
-	. "./Interpolare"
+	r "./Interpolare"
 	"bufio"
 	"fmt"
 	"os"
@@ -53,8 +53,8 @@ func main() {
 			y2 = append(y2, currentY)
 		}
 
-		var s1 = NewSpline(x1, y1, CubicSecondDeriv, 0, 0)
-		var s2 = NewSpline(x2, y2, CubicSecondDeriv, 0, 0)
+		var s1 = r.NewSpline(x1, y1, r.CubicSecondDeriv, 0, 0)
+		var s2 = r.NewSpline(x2, y2, r.CubicSecondDeriv, 0, 0)
 
 		//fmt.Println(s.At(7))
 
@@ -64,7 +64,7 @@ func main() {
 			xTemp := x1[0] + float64(i)*h
 			yTemp := s1.At(xTemp)
 			//fmt.Print("v ", xTemp, " ", yTemp, " ", 100, "\n")
-			fmt.Fprintf(w, "v %f %f %d \n", xTemp, yTemp, ii*100)
+			fmt.Fprintf(w, "v %f %f %d \n", xTemp, yTemp, ii*4)
 		}
 
 		h = (x2[nrPuncteDedesubt-1] - x2[0]) / float64(p)
@@ -73,8 +73,28 @@ func main() {
 			xTemp := x2[0] + float64(i)*h
 			yTemp := s2.At(xTemp)
 			//fmt.Print("v ", xTemp, " ", yTemp, " ", 100, "\n")
-			fmt.Fprintf(w, "v %f %f %d \n", xTemp, yTemp, ii*100)
+			fmt.Fprintf(w, "v %f %f %d \n", xTemp, yTemp, ii*4)
 		}
 	}
+	p--
+	for i := 1; i < p; i++ {
+
+		//fmt.Fprintf(w, "f %d %d %d \n", i, 2*p+i, 2*p+i+1 )
+		//fmt.Fprintf(w, "f %d %d %d \n", i, i+1, 2*p+i+1 )
+		//fmt.Fprintf(w, "f %d %d %d \n", p+i, 3*p+i, 3*p+i+1 )
+		//fmt.Fprintf(w, "f %d %d %d \n", p+i, p+i+1, 3*p+i+1 )
+
+		fmt.Fprintf(w, "f %d %d %d \n", i, 2*p+i, 2*p+i+1)
+		fmt.Fprintf(w, "f %d %d %d \n", i, i+1, 2*p+i+1)
+		fmt.Fprintf(w, "f %d %d %d \n", p+i, 3*p+i, 3*p+i+1)
+		fmt.Fprintf(w, "f %d %d %d \n", p+i, p+i+1, 3*p+i+1)
+	}
+	p++
+	fmt.Fprintf(w, "f %d %d %d \n", 1, p, 3*p-2)
+	fmt.Fprintf(w, "f %d %d %d \n", 1, 2*p-1, 3*p-2)
+	fmt.Fprintf(w, "f %d %d %d \n", p-1, 3*p-3, 4*p-4)
+	fmt.Fprintf(w, "f %d %d %d \n", p-1, 2*p-2, 4*p-4)
+
 	w.Flush()
+
 }

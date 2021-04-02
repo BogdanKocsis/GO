@@ -6,7 +6,6 @@ import (
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
 	"log"
-	"math"
 	"os"
 )
 
@@ -53,13 +52,13 @@ func LeastSquaresMethod(points *[]Point) (a float64, b float64) {
 	return a, b
 }
 
-func Rotate(p Point, alpha float64) Point {
-	newPoint := Point{
-		x: p.x*math.Cos(alpha) - p.y*math.Sin(alpha),
-		y: p.x*math.Sin(alpha) + p.y*math.Cos(alpha),
-	}
-	return newPoint
-}
+//func Rotate(p Point, alpha float64) Point {
+//	newPoint := Point{
+//		x: p.x*math.Cos(alpha) - p.y*math.Sin(alpha),
+//		y: p.x*math.Sin(alpha) + p.y*math.Cos(alpha),
+//	}
+//	return newPoint
+//}
 
 func Plot(a float64, b float64, points *[]Point, numberOfPoint int) {
 
@@ -89,7 +88,7 @@ func Plot(a float64, b float64, points *[]Point, numberOfPoint int) {
 	}
 	p.Add(scatter, line)
 
-	w, err := p.WriterTo(300, 300, "svg")
+	w, err := p.WriterTo(300, 300, "pdf")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -104,7 +103,7 @@ func Plot(a float64, b float64, points *[]Point, numberOfPoint int) {
 func main() {
 	points := make([]Point, 0)
 	var numberOfPoints int
-	alpha := math.Pi / 2
+	//alpha := math.Pi / 2
 
 	file, err := os.Open("points.txt")
 
@@ -127,17 +126,17 @@ func main() {
 	log.Print("Before rotation", "\n")
 	log.Println("a= ", a)
 	log.Println("b= ", b)
-	//Plot(a,b,&points,numberOfPoints)
-
-	for i := 0; i < numberOfPoints; i++ {
-		points[i] = Rotate(points[i], alpha)
-	}
-
-	a, b = LeastSquaresMethod(&points)
-	log.Print("After rotation", "\n")
-	log.Println("a= ", a)
-	log.Println("b= ", b)
-
 	Plot(a, b, &points, numberOfPoints)
+
+	//for i := 0; i < numberOfPoints; i++ {
+	//	points[i] = Rotate(points[i], alpha)
+	//}
+	//
+	//a, b = LeastSquaresMethod(&points)
+	//log.Print("After rotation", "\n")
+	//log.Println("a= ", a)
+	//log.Println("b= ", b)
+	//
+	//Plot(a, b, &points, numberOfPoints)
 
 }
