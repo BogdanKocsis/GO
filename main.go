@@ -4,8 +4,22 @@ import (
 	r "./Interpolare"
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 )
+
+type Points struct {
+	x, y, z float64
+}
+
+func calculateDistance(firstPoint Points, secondPoint Points) float64 {
+	return math.Sqrt(math.Pow(firstPoint.x-secondPoint.x, 2) + math.Pow(firstPoint.y-secondPoint.y, 2) + math.Pow(firstPoint.z-secondPoint.z, 2))
+}
+
+func calculateArea(a, b, c float64) float64 {
+	p := (a + b + c) / 2
+	return math.Sqrt(p * (p - a) * (p - b) * (p - c))
+}
 
 func main() {
 
@@ -28,6 +42,7 @@ func main() {
 
 	outputFile, _ := os.Create("result.obj")
 	w := bufio.NewWriter(outputFile)
+	var vertices []Points
 
 	for ii := 0; ii < nrFelii; ii++ {
 
@@ -65,6 +80,7 @@ func main() {
 			yTemp := s1.At(xTemp)
 			//fmt.Print("v ", xTemp, " ", yTemp, " ", 100, "\n")
 			fmt.Fprintf(w, "v %f %f %d \n", xTemp, yTemp, ii*4)
+			vertices = append(vertices, Points{xTemp, yTemp, float64(ii * 4)})
 		}
 
 		h = (x2[nrPuncteDedesubt-1] - x2[0]) / float64(p)
@@ -74,8 +90,11 @@ func main() {
 			yTemp := s2.At(xTemp)
 			//fmt.Print("v ", xTemp, " ", yTemp, " ", 100, "\n")
 			fmt.Fprintf(w, "v %f %f %d \n", xTemp, yTemp, ii*4)
+			vertices = append(vertices, Points{xTemp, yTemp, float64(ii * 4)})
 		}
 	}
+
+	area := .0
 	p--
 	for i := 1; i < p; i++ {
 
@@ -85,16 +104,52 @@ func main() {
 		//fmt.Fprintf(w, "f %d %d %d \n", p+i, p+i+1, 3*p+i+1 )
 
 		fmt.Fprintf(w, "f %d %d %d \n", i, 2*p+i, 2*p+i+1)
+		a := calculateDistance(vertices[i-1], vertices[2*p+i-1])
+		b := calculateDistance(vertices[2*p+i-1], vertices[2*p+i])
+		c := calculateDistance(vertices[2*p+i], vertices[i-1])
+		area += calculateArea(a, b, c)
+
 		fmt.Fprintf(w, "f %d %d %d \n", i, i+1, 2*p+i+1)
+		a = calculateDistance(vertices[i-1], vertices[i])
+		b = calculateDistance(vertices[i], vertices[2*p+i])
+		area += calculateArea(a, b, c)
+
 		fmt.Fprintf(w, "f %d %d %d \n", p+i, 3*p+i, 3*p+i+1)
+		a = calculateDistance(vertices[p+i-1], vertices[3*p+i-1])
+		b = calculateDistance(vertices[3*p+i-1], vertices[3*p+i])
+		c = calculateDistance(vertices[3*p+i], vertices[p+i-1])
+		area += calculateArea(a, b, c)
+
 		fmt.Fprintf(w, "f %d %d %d \n", p+i, p+i+1, 3*p+i+1)
+
+		a = calculateDistance(vertices[p+i-1], vertices[p+i])
+		b = calculateDistance(vertices[p+i], vertices[3*p+i])
+		area += calculateArea(a, b, c)
 	}
 	p++
 	fmt.Fprintf(w, "f %d %d %d \n", 1, p, 3*p-2)
-	fmt.Fprintf(w, "f %d %d %d \n", 1, 2*p-1, 3*p-2)
-	fmt.Fprintf(w, "f %d %d %d \n", p-1, 3*p-3, 4*p-4)
-	fmt.Fprintf(w, "f %d %d %d \n", p-1, 2*p-2, 4*p-4)
+	a := calculateDistance(vertices[0], vertices[p-1])
+	b := calculateDistance(vertices[p-1], vertices[3*p-3])
+	c := calculateDistance(vertices[3*p-3], vertices[0])
+	area += calculateArea(a, b, c)
 
+	fmt.Fprintf(w, "f %d %d %d \n", 1, 2*p-1, 3*p-2)
+	a = calculateDistance(vertices[0], vertices[2*p-2])
+	b = calculateDistance(vertices[2*p-2], vertices[3*p-3])
+	area += calculateArea(a, b, c)
+
+	fmt.Fprintf(w, "f %d %d %d \n", p-1, 3*p-3, 4*p-4)
+	a = calculateDistance(vertices[p-2], vertices[3*p-4])
+	b = calculateDistance(vertices[3*p-4], vertices[4*p-5])
+	c = calculateDistance(vertices[4*p-5], vertices[p-2])
+	area += calculateArea(a, b, c)
+
+	fmt.Fprintf(w, "f %d %d %d \n", p-1, 2*p-2, 4*p-4)
+	a = calculateDistance(vertices[p-2], vertices[2*p-3])
+	b = calculateDistance(vertices[2*p-3], vertices[4*p-5])
+	area += calculateArea(a, b, c)
+
+	fmt.Println("Calculated Area: ", area)
 	w.Flush()
 
 }

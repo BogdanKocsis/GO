@@ -8,7 +8,8 @@ package main
 
 import (
 	"fmt"
-	//"gonum.org/v1/gonum/mat"
+	"gonum.org/v1/gonum/mat"
+	"log"
 )
 
 func main() {
@@ -153,27 +154,37 @@ func main() {
 				}
 			}
 
-			//
-			//		var result []float64
-			//		for _, arr := range FP {
-			//			for _, item := range arr {
-			//				result = append(result, item)
-			//			}
-			//		}
-			//
-			//		z := mat.NewDense(nn, nn, result)
-			//		var du mat.Dense
-			//		_ = du.Inverse(z)
-			//
-			//		//if err != nil {
-			//		//	log.Fatalf("z is not invertible: %v", err)
-			//		//}
-			//
+			var result []float64
+			for _, arr := range FP {
+				for _, item := range arr {
+					result = append(result, item)
+				}
+			}
+			var z = mat.NewDense(nn, nn, result)
+
+			var result1 []float64
+			for _, arr := range F {
+				for _, item := range arr {
+					result = append(result1, item)
+				}
+			}
+
+			p := mat.NewDense(nn, 1, result1)
+
+			var c = mat.NewDense(nn, nn, nil)
+			err := c.Inverse(z)
+
+			if err != nil {
+				log.Fatalf("z is not invertible: %v", err)
+			}
+			//var du = mat.NewDense(nn,1,nil)
+			//du.Mul(c,p)
+
 			//		u.Sub(u, &du)
 			//		for i := 1; true; {
 			//			sus[i][0] = u.At(i, 0)
 			//		}
-			//		var j = n + 2
+			//		var j = n + 2.
 			//		for i := 1; true; {
 			//			if j < nn {
 			//				inf[i][0] = u.At(j, 0)
@@ -209,8 +220,10 @@ func main() {
 			//	}
 			//
 			//}
+			fmt.Println(p.Dims())
+			break
 		}
 
 	}
-	fmt.Println(FP)
+
 }

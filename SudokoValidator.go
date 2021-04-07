@@ -53,15 +53,16 @@ func main() {
 		}
 		fmt.Println()
 	}
-	fmt.Println()
+
 	fmt.Println("Is Valid? ", isValidSudoko(sudoko))
 
+	fmt.Println()
 	for i := 0; i < 9; i++ {
 		for j := 0; j < 9; j++ {
 			fmt.Printf("%d ", sudokoMistake[i][j])
 		}
 		fmt.Println()
 	}
-	fmt.Println()
+
 	fmt.Println("Is Valid? ", isValidSudoko(sudokoMistake))
 }

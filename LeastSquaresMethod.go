@@ -88,7 +88,7 @@ func Plot(a float64, b float64, points *[]Point, numberOfPoint int) {
 	}
 	p.Add(scatter, line)
 
-	w, err := p.WriterTo(300, 300, "pdf")
+	w, err := p.WriterTo(300, 300, "svg")
 	if err != nil {
 		log.Panic(err)
 	}

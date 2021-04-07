@@ -243,7 +243,7 @@ func TimeSubYearsMonthsWeeksDays(days float64) {
 	weeks := math.Floor((days - years*365 - months*30) / 7)
 	day := days - years*365 - months*30 - weeks*7 //calculates the number of days left in the calculation
 
-	fmt.Printf("The diffence between of these 2 days: %v years, %v months, %v weeks, %v days. \n", years, months, weeks, day)
+	fmt.Printf("The diffence between of these 2 dates: %v years, %v months, %v weeks, %v days. \n", -years, months, weeks, day)
 	fmt.Println()
 }
 
@@ -268,15 +268,12 @@ func readValue(value *int) {
 
 func main() {
 
-	fmt.Println("Write first date")
-	date1 := Date{}
-	date1.ReadDate()
-	//print(date1.Year(),"-",date1.Month(),"-",date1.Day())
+	date1 := Date{day: 15, month: 10, year: 1999}
+	date2 := Date{day: 15, month: 10, year: 1998}
 
-	fmt.Println("Write second data")
-	date2 := Date{}
-	date2.ReadDate()
-	//print(date2.Year(),"-",date2.Month(),"-",date2.Day())
+	fmt.Println(date1.Year(), "-", date1.Month(), "-", date1.Day())
+
+	fmt.Println(date2.Year(), "-", date2.Month(), "-", date2.Day())
 
 	t1 := ToDate(date1.Year(), date1.Month(), date1.Day())
 	t2 := ToDate(date2.Year(), date2.Month(), date2.Day())
@@ -298,6 +295,7 @@ func main() {
 
 	case 2:
 		days := GetDifference(t1, t2)
+
 		TimeSubYearsMonthsWeeksDays(float64(days))
 
 	case 3:
